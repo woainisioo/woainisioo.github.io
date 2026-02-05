@@ -10,10 +10,14 @@ const socials = [
 ].filter((s) => !!s.href);
 ---
 
-<header>
-	<nav>
-		<h2><a href="/">{SITE_TITLE}</a></h2>
-		<div class="internal-links">
+<header class="topbar">
+	<nav class="topbar__nav">
+		<a class="topbar__brand" href="/">
+			<span class="topbar__mark" aria-hidden="true"></span>
+			<span>{SITE_TITLE}</span>
+		</a>
+
+		<div class="topbar__links" aria-label="Primary">
 			<HeaderLink href="/">首页</HeaderLink>
 			<HeaderLink href="/blog">文章</HeaderLink>
 			<HeaderLink href="/tags">标签</HeaderLink>
@@ -22,10 +26,9 @@ const socials = [
 		</div>
 
 		{socials.length > 0 && (
-			<div class="social-links">
+			<div class="topbar__social" aria-label="Social">
 				{socials.map((s) => (
-					<a href={s.href} target={s.key === 'email' ? undefined : '_blank'} rel="me">
-						<span class="sr-only">{s.label}</span>
+					<a class="topbar__socialLink" href={s.href} target={s.key === 'email' ? undefined : '_blank'} rel="me">
 						{s.label}
 					</a>
 				))}
@@ -33,58 +36,80 @@ const socials = [
 		)}
 	</nav>
 </header>
+
 <style>
-	header {
-		margin: 0;
-		padding: 0 1em;
-		background: white;
-		box-shadow: 0 2px 8px rgba(var(--black), 5%);
+	.topbar {
+		position: sticky;
+		top: 0;
+		z-index: 50;
+		border-bottom: 1px solid rgba(255, 255, 255, 0.10);
+		background: rgba(10, 11, 14, 0.55);
+		backdrop-filter: blur(10px);
 	}
-	h2 {
-		margin: 0;
-		font-size: 1em;
-		white-space: nowrap;
-	}
-	
-	nav {
+	.topbar__nav {
+		max-width: var(--maxw);
+		margin: 0 auto;
+		padding: 0.9rem 1.1rem;
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
 		gap: 1rem;
 		flex-wrap: wrap;
 	}
-
-	.internal-links {
+	.topbar__brand {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.65rem;
+		font-weight: 800;
+		letter-spacing: -0.02em;
+		background-image: none;
+	}
+	.topbar__mark {
+		width: 12px;
+		height: 12px;
+		border-radius: 999px;
+		background: var(--accent);
+		box-shadow: 0 0 0 6px rgba(255, 176, 0, 0.12);
+	}
+	.topbar__links {
 		display: flex;
 		gap: 0.25rem;
 		flex-wrap: wrap;
 	}
-
-	nav a {
-		padding: 1em 0.5em;
-		color: var(--black);
-		border-bottom: 4px solid transparent;
-		text-decoration: none;
+	.topbar__links :global(a) {
+		background-image: none;
+		color: rgba(var(--ink), 0.88);
+		padding: 0.45rem 0.6rem;
+		border-radius: 12px;
+		border: 1px solid transparent;
+		transition: border 140ms ease, background 140ms ease, transform 140ms ease;
 	}
-	nav a.active {
-		text-decoration: none;
-		border-bottom-color: var(--accent);
+	.topbar__links :global(a:hover) {
+		background: rgba(255, 255, 255, 0.06);
+		border-color: rgba(255, 255, 255, 0.12);
+		transform: translateY(-1px);
 	}
-
-	.social-links {
+	.topbar__links :global(a.active) {
+		background: rgba(255, 176, 0, 0.12);
+		border-color: rgba(255, 176, 0, 0.25);
+		color: rgba(var(--ink), 0.98);
+	}
+	.topbar__social {
 		display: flex;
-		gap: 0.5rem;
+		gap: 0.55rem;
 		flex-wrap: wrap;
-		font-size: 0.9em;
 		opacity: 0.9;
+		font-size: 0.92rem;
 	}
-	.social-links a {
-		padding: 0.5em 0.25em;
+	.topbar__socialLink {
+		background-image: none;
+		color: rgba(var(--muted), 1);
+		padding: 0.25rem 0.35rem;
+		border-radius: 10px;
 	}
+	.topbar__socialLink:hover { color: rgba(var(--ink), 0.96); }
 
 	@media (max-width: 720px) {
-		.social-links {
-			display: none;
-		}
+		.topbar__social { display: none; }
 	}
 </style>

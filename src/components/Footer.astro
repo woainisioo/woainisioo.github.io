@@ -3,16 +3,44 @@ import { AUTHOR_NAME } from '../consts';
 const today = new Date();
 ---
 
-<footer>
-	<div>&copy; {today.getFullYear()} {AUTHOR_NAME}</div>
-	<div style="opacity:0.75;font-size:0.9em;margin-top:0.4rem;">Powered by Astro · Hosted on GitHub Pages</div>
+<footer class="footer">
+	<div class="footer__inner">
+		<div class="footer__left">
+			<div class="footer__title">&copy; {today.getFullYear()} {AUTHOR_NAME}</div>
+			<div class="footer__sub">Noir Index · Astro · GitHub Pages</div>
+		</div>
+		<div class="footer__right">
+			<a href="/rss.xml">RSS</a>
+			<a href="/sitemap-index.xml">Sitemap</a>
+		</div>
+	</div>
 </footer>
 
 <style>
-	footer {
-		padding: 2em 1em 6em 1em;
-		background: linear-gradient(var(--gray-gradient)) no-repeat;
-		color: rgb(var(--gray));
-		text-align: center;
+	.footer {
+		margin-top: 3.5rem;
+		border-top: 1px solid rgba(255, 255, 255, 0.10);
+		background: rgba(255, 255, 255, 0.03);
 	}
+	.footer__inner {
+		max-width: var(--maxw);
+		margin: 0 auto;
+		padding: 1.8rem 1.1rem 3.8rem;
+		display: flex;
+		align-items: flex-end;
+		justify-content: space-between;
+		gap: 1rem;
+		flex-wrap: wrap;
+	}
+	.footer__title { font-weight: 800; letter-spacing: -0.01em; }
+	.footer__sub { opacity: 0.7; font-size: 0.92rem; margin-top: 0.25rem; }
+	.footer__right {
+		display: flex;
+		gap: 0.8rem;
+		flex-wrap: wrap;
+		opacity: 0.85;
+		font-size: 0.95rem;
+	}
+	.footer__right a { background-image: none; color: rgba(var(--muted), 1); }
+	.footer__right a:hover { color: rgba(var(--ink), 0.96); }
 </style>
