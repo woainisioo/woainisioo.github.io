@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
+import FormattedDate from '../../components/FormattedDate.astro';
 
 export async function getStaticPaths() {
 	const posts = await getCollection('blog');
@@ -17,17 +18,58 @@ const posts = (await getCollection('blog'))
 	.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 ---
 
-<BaseLayout title={`标签：${tag}`}>
-	<h1>标签：{tag}</h1>
-	<p><a href="/tags">← 返回标签列表</a></p>
-	<ul>
-		{posts.map((post) => (
-			<li>
-				<a href={`/blog/${post.slug}/`}>{post.data.title}</a>
-				<span style="opacity:0.7">
-					 — {post.data.pubDate.toLocaleDateString('zh-CN')}
-				</span>
-			</li>
-		))}
-	</ul>
+<BaseLayout title={`标签：${tag}`} description={`所有包含“${tag}”的文章`}>
+	<section class="wrap">
+		<div class="head">
+			<h1>标签：{tag}</h1>
+			<a class="back" href="/tags">← 返回标签</a>
+		</div>
+
+		<ul class="list">
+			{posts.map((post) => (
+				<li class="item">
+					<a class="title" href={`/blog/${post.slug}/`}>{post.data.title}</a>
+					<div class="meta"><FormattedDate date={post.data.pubDate} /></div>
+					<div class="desc">{post.data.description}</div>
+				</li>
+			))}
+		</ul>
+	</section>
+
+	<style>
+		.wrap { margin-top: 0.6rem; }
+		.head {
+			display: flex;
+			align-items: baseline;
+			justify-content: space-between;
+			gap: 1rem;
+			flex-wrap: wrap;
+		}
+		.back { background-image: none; color: rgba(var(--muted), 1); }
+		.back:hover { color: rgba(31, 75, 255, 1); }
+
+		.list {
+			list-style: none;
+			padding: 0;
+			margin: 1rem 0 0;
+			border-radius: var(--radius-lg);
+			border: 1px solid rgba(16, 18, 22, 0.12);
+			background: rgba(255, 255, 255, 0.60);
+			box-shadow: 0 18px 45px rgba(16, 18, 22, 0.08);
+			overflow: hidden;
+		}
+		.item {
+			padding: 0.95rem 1rem;
+			border-top: 1px dashed rgba(16, 18, 22, 0.16);
+		}
+		.item:first-child { border-top: none; }
+		.title {
+			background-image: none;
+			font-weight: 950;
+			letter-spacing: -0.02em;
+		}
+		.title:hover { color: rgba(31, 75, 255, 1); }
+		.meta { margin-top: 0.25rem; color: rgba(var(--muted), 1); font-size: 0.92rem; }
+		.desc { margin-top: 0.35rem; color: rgba(var(--ink), 0.86); }
+	</style>
 </BaseLayout>

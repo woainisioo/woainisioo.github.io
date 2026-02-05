@@ -13,27 +13,39 @@ const posts = (await getCollection('blog'))
 	.sort((a, b) => b.pubDate.valueOf() - a.pubDate.valueOf());
 ---
 
-<BaseLayout title="搜索">
-	<h1>搜索</h1>
-	<p style="opacity:0.8">在本博客的文章标题/摘要/标签中搜索（纯前端，无需后端）。</p>
+<BaseLayout title="搜索" description="在本博客的文章中搜索">
+	<section class="wrap">
+		<h1>搜索</h1>
+		<p class="sub">在标题 / 摘要 / 标签中搜索（纯前端，无需后端）。</p>
 
-	<input id="q" type="search" placeholder="输入关键词…" style="width:100%;padding:0.6rem;border:1px solid rgba(var(--black),15%);border-radius:8px;" />
-	<ul id="results"></ul>
+		<div class="bar">
+			<input id="q" type="search" placeholder="输入关键词…" autocomplete="off" />
+			<div class="hint">支持模糊匹配</div>
+		</div>
+
+		<ul id="results" class="results"></ul>
+	</section>
 
 	<script define:vars={{ posts }}>
 		const input = document.getElementById('q');
 		const list = document.getElementById('results');
 
+		function esc(s) {
+			return (s || '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+		}
+
 		function render(items) {
 			list.innerHTML = items
-				.map(
-					(p) =>
-						`<li style="margin:0.5rem 0">
-							<a href="/blog/${p.slug}/">${p.title}</a>
-							<div style="opacity:0.75;font-size:0.95em">${p.description ?? ''}</div>
-							<div style="opacity:0.7;font-size:0.85em">${new Date(p.pubDate).toLocaleDateString('zh-CN')} ${p.tags?.length ? ' · ' + p.tags.join(', ') : ''}</div>
-						</li>`
-				)
+				.map((p) => {
+					const date = new Date(p.pubDate).toLocaleDateString('zh-CN');
+					const tags = (p.tags || []).length ? ` · ${esc((p.tags || []).join(' · '))}` : '';
+					return `
+					<li class="result">
+						<a class="result__title" href="/blog/${p.slug}/">${esc(p.title)}</a>
+						<div class="result__meta">${date}${tags}</div>
+						<div class="result__desc">${esc(p.description || '')}</div>
+					</li>`;
+				})
 				.join('');
 		}
 
@@ -49,4 +61,56 @@ const posts = (await getCollection('blog'))
 		render(posts);
 		input.addEventListener('input', () => render(query(input.value)));
 	</script>
+
+	<style>
+		.wrap { margin-top: 0.6rem; }
+		.sub { color: rgba(var(--muted), 1); }
+		.bar {
+			margin-top: 0.9rem;
+			border-radius: var(--radius-lg);
+			border: 1px solid rgba(16, 18, 22, 0.14);
+			background: rgba(255, 255, 255, 0.70);
+			box-shadow: var(--shadow);
+			padding: 0.9rem;
+		}
+		.bar input {
+			width: 100%;
+			border-radius: 16px;
+		}
+		.hint {
+			margin-top: 0.55rem;
+			color: rgba(var(--muted), 1);
+			font-size: 0.92rem;
+		}
+		.results {
+			list-style: none;
+			padding: 0;
+			margin: 1rem 0 0;
+			border-radius: var(--radius-lg);
+			border: 1px solid rgba(16, 18, 22, 0.12);
+			background: rgba(255, 255, 255, 0.60);
+			box-shadow: 0 18px 45px rgba(16, 18, 22, 0.08);
+			overflow: hidden;
+		}
+		.result {
+			padding: 0.95rem 1rem;
+			border-top: 1px dashed rgba(16, 18, 22, 0.16);
+		}
+		.result:first-child { border-top: none; }
+		.result__title {
+			background-image: none;
+			font-weight: 950;
+			letter-spacing: -0.02em;
+		}
+		.result__title:hover { color: rgba(31, 75, 255, 1); }
+		.result__meta {
+			margin-top: 0.25rem;
+			color: rgba(var(--muted), 1);
+			font-size: 0.92rem;
+		}
+		.result__desc {
+			margin-top: 0.35rem;
+			color: rgba(var(--ink), 0.86);
+		}
+	</style>
 </BaseLayout>

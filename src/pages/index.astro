@@ -6,7 +6,7 @@ import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
 
 const posts = (await getCollection('blog'))
 	.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
-	.slice(0, 6);
+	.slice(0, 5);
 
 const allTags = new Map<string, number>();
 for (const p of await getCollection('blog')) {
@@ -14,50 +14,57 @@ for (const p of await getCollection('blog')) {
 }
 const topTags = [...allTags.entries()]
 	.sort((a, b) => b[1] - a[1])
-	.slice(0, 10)
+	.slice(0, 12)
 	.map(([tag]) => tag);
 ---
 
 <BaseLayout title={SITE_TITLE} description={SITE_DESCRIPTION}>
 	<section class="hero">
-		<div class="hero__grid">
-			<div class="hero__card">
-				<div class="hero__kicker">NOIR INDEX</div>
-				<h1 class="hero__title">{SITE_TITLE}</h1>
-				<p class="hero__desc">{SITE_DESCRIPTION}</p>
-				<div class="hero__meta">
-					<span class="dot" aria-hidden="true"></span>
-					<span>中文写作</span>
-					<span class="sep">/</span>
-					<span>RSS</span>
-					<span class="sep">/</span>
-					<span>站内搜索</span>
-				</div>
-				<div class="hero__actions">
-					<a class="btn" href="/blog">从最新文章开始</a>
-					<a class="btn btn--ghost" href="/search">搜索</a>
-					<a class="btn btn--ghost" href="/rss.xml">RSS</a>
-				</div>
+		<div class="hero__frame">
+			<div class="hero__kicker">
+				<span class="pill">PAPER ATELIER</span>
+				<span class="rule" aria-hidden="true"></span>
+				<span class="kicker__meta">notes · builds · reflections</span>
 			</div>
-
-			<aside class="hero__aside">
-				<div class="aside__card">
-					<div class="aside__title">快速入口</div>
-					<ul class="aside__list">
-						<li><a href="/tags">按标签浏览</a></li>
-						<li><a href="/about">关于我</a></li>
-						<li><a href="/blog">文章列表</a></li>
-					</ul>
-					{topTags.length > 0 && (
-						<div class="chips">
-							{topTags.map((t) => (
-								<a class="chip" href={`/tags/${encodeURIComponent(t)}`}>{t}</a>
-							))}
-						</div>
-					)}
-				</div>
-			</aside>
+			<h1 class="hero__title">{SITE_TITLE}</h1>
+			<p class="hero__desc">{SITE_DESCRIPTION}</p>
+			<div class="hero__actions">
+				<a class="btn" href="/blog">阅读文章</a>
+				<a class="btn btn--ghost" href="/search">搜索</a>
+				<a class="btn btn--ghost" href="/rss.xml">RSS</a>
+			</div>
 		</div>
+
+		<aside class="hero__aside">
+			<div class="aside__card">
+				<div class="aside__title">快捷入口</div>
+				<div class="aside__grid">
+					<a class="tile" href="/tags">
+						<span class="tile__t">标签</span>
+						<span class="tile__d">按主题浏览</span>
+					</a>
+					<a class="tile" href="/about">
+						<span class="tile__t">关于</span>
+						<span class="tile__d">简介与联系方式</span>
+					</a>
+					<a class="tile" href="/blog">
+						<span class="tile__t">归档</span>
+						<span class="tile__d">所有文章列表</span>
+					</a>
+					<a class="tile" href="/search">
+						<span class="tile__t">搜索</span>
+						<span class="tile__d">标题/摘要/标签</span>
+					</a>
+				</div>
+				{topTags.length > 0 && (
+					<div class="chips">
+						{topTags.map((t) => (
+							<a class="chip" href={`/tags/${encodeURIComponent(t)}`}>{t}</a>
+						))}
+					</div>
+				)}
+			</div>
+		</aside>
 	</section>
 
 	<section class="section">
@@ -65,129 +72,95 @@ const topTags = [...allTags.entries()]
 			<h2>最新文章</h2>
 			<a class="section__more" href="/blog">查看全部 →</a>
 		</div>
-
-		{posts.length === 0 ? (
-			<div class="empty">
-				<p>还没有文章。你可以在 <code>src/content/blog/</code> 新建 Markdown 文件。</p>
-			</div>
-		) : (
-			<ul class="postlist">
-				{posts.map((post, i) => (
-					<li class="post" style={`--d:${i * 70}ms`}>
-						<a class="post__title" href={`/blog/${post.slug}/`}>{post.data.title}</a>
-						<div class="post__meta">
-							<span class="post__date"><FormattedDate date={post.data.pubDate} /></span>
-							{(post.data.tags?.length ?? 0) > 0 && (
-								<span class="post__tags">
-									{post.data.tags.slice(0, 3).join(' · ')}
-								</span>
-							)}
-						</div>
-						<div class="post__desc">{post.data.description}</div>
-					</li>
-				))}
-			</ul>
-		)}
+		<ul class="postlist">
+			{posts.map((post, i) => (
+				<li class="post" style={`--d:${i * 80}ms`}>
+					<a class="post__title" href={`/blog/${post.slug}/`}>{post.data.title}</a>
+					<div class="post__meta">
+						<span class="date"><FormattedDate date={post.data.pubDate} /></span>
+						{(post.data.tags?.length ?? 0) > 0 && (
+							<span class="tags">{post.data.tags.slice(0, 3).join(' · ')}</span>
+						)}
+					</div>
+					<div class="post__desc">{post.data.description}</div>
+				</li>
+			))}
+		</ul>
 	</section>
 
 	<style>
 		.hero {
-			margin-top: 0.75rem;
-		}
-		.hero__grid {
+			margin-top: 0.8rem;
 			display: grid;
-			grid-template-columns: 1.55fr 0.95fr;
+			grid-template-columns: 1.55fr 1fr;
 			gap: 1rem;
 			align-items: stretch;
 		}
-
-		/* Index-card surface */
-		.hero__card,
-		.aside__card {
+		.hero__frame {
 			position: relative;
 			border-radius: var(--radius-lg);
-			background:
-				linear-gradient(180deg, rgba(var(--surface), 0.92), rgba(var(--surface-2), 0.88));
-			border: 1px solid rgba(255, 255, 255, 0.10);
-			box-shadow:
-				0 28px 80px rgba(0, 0, 0, 0.48),
-				0 2px 0 rgba(255, 255, 255, 0.06) inset;
+			background: rgba(255, 255, 255, 0.75);
+			border: 1px solid rgba(16, 18, 22, 0.14);
+			box-shadow: var(--shadow);
+			padding: 1.35rem 1.35rem 1.55rem;
 			overflow: hidden;
 		}
-		.hero__card {
-			padding: 1.35rem 1.35rem 1.5rem;
-		}
-		.hero__card::before {
+		.hero__frame::before {
 			content: "";
 			position: absolute;
-			inset: -2px;
+			inset: -1px;
 			background:
-				radial-gradient(900px 320px at 20% 0%, rgba(255, 176, 0, 0.18), transparent 55%),
-				radial-gradient(700px 320px at 95% 20%, rgba(124, 247, 212, 0.10), transparent 52%);
+				radial-gradient(900px 340px at 14% 0%, rgba(31, 75, 255, 0.14), transparent 55%),
+				radial-gradient(700px 300px at 90% 10%, rgba(255, 61, 46, 0.08), transparent 55%);
 			pointer-events: none;
 		}
-		.hero__card::after {
-			content: "";
-			position: absolute;
-			left: 0;
-			right: 0;
-			top: 0;
-			height: 2px;
-			background: linear-gradient(90deg, transparent, rgba(255, 176, 0, 0.85), transparent);
-			opacity: 0.65;
-		}
-
 		.hero__kicker {
 			position: relative;
-			display: inline-flex;
+			display: flex;
 			align-items: center;
-			gap: 0.6rem;
-			letter-spacing: 0.16em;
-			font-size: 0.78rem;
-			text-transform: uppercase;
+			gap: 0.75rem;
+			flex-wrap: wrap;
 			color: rgba(var(--muted), 1);
 		}
-		.hero__kicker::before {
-			content: "";
-			width: 10px;
-			height: 10px;
+		.pill {
+			display: inline-flex;
+			align-items: center;
+			gap: 0.5rem;
+			padding: 0.28rem 0.7rem;
 			border-radius: 999px;
-			background: var(--accent);
-			box-shadow: 0 0 0 6px rgba(255, 176, 0, 0.14);
+			border: 1px solid rgba(31, 75, 255, 0.25);
+			background: rgba(31, 75, 255, 0.07);
+			font-size: 0.78rem;
+			letter-spacing: 0.14em;
+			text-transform: uppercase;
+			color: rgba(var(--ink), 0.9);
+		}
+		.rule {
+			flex: 1;
+			height: 1px;
+			min-width: 120px;
+			background: linear-gradient(90deg, rgba(16, 18, 22, 0.25), transparent);
+			opacity: 0.8;
+		}
+		.kicker__meta {
+			font-size: 0.9rem;
+			opacity: 0.85;
+			letter-spacing: 0.02em;
 		}
 		.hero__title {
 			position: relative;
-			margin-top: 0.8rem;
-			font-size: clamp(2.1rem, 4vw, 3.1rem);
+			margin-top: 0.95rem;
 			line-height: 1.02;
 		}
 		.hero__desc {
 			position: relative;
-			margin: 0.75rem 0 0;
-			max-width: 58ch;
+			margin: 0.8rem 0 0;
+			max-width: 60ch;
 			color: rgba(var(--ink), 0.88);
 		}
-		.hero__meta {
-			position: relative;
-			display: flex;
-			align-items: center;
-			gap: 0.6rem;
-			margin-top: 0.9rem;
-			font-size: 0.92rem;
-			color: rgba(var(--muted), 1);
-			flex-wrap: wrap;
-		}
-		.dot {
-			width: 10px;
-			height: 10px;
-			border-radius: 999px;
-			background: rgba(255, 176, 0, 0.85);
-		}
-		.sep { opacity: 0.55; }
-
 		.hero__actions {
 			position: relative;
-			margin-top: 1.1rem;
+			margin-top: 1.15rem;
 			display: flex;
 			gap: 0.65rem;
 			flex-wrap: wrap;
@@ -197,72 +170,86 @@ const topTags = [...allTags.entries()]
 			display: inline-flex;
 			align-items: center;
 			justify-content: center;
-			gap: 0.4rem;
 			padding: 0.62rem 0.95rem;
 			border-radius: 999px;
-			border: 1px solid rgba(255, 255, 255, 0.14);
-			font-weight: 700;
+			border: 1px solid rgba(16, 18, 22, 0.16);
+			font-weight: 800;
 			letter-spacing: -0.01em;
-			color: rgb(var(--bg));
-			background: linear-gradient(180deg, rgba(255, 176, 0, 1), rgba(255, 146, 0, 1));
-			box-shadow: 0 16px 30px rgba(255, 176, 0, 0.10);
+			color: white;
+			background: linear-gradient(180deg, rgba(31, 75, 255, 1), rgba(10, 29, 122, 1));
+			box-shadow: 0 18px 34px rgba(31, 75, 255, 0.18);
 			transition: transform 140ms ease, filter 140ms ease;
 		}
-		.btn:hover { transform: translateY(-1px); filter: brightness(1.03); }
+		.btn:hover { transform: translateY(-1px); filter: brightness(1.02); }
 		.btn--ghost {
-			color: rgba(var(--ink), 0.92);
-			background: rgba(255, 255, 255, 0.06);
-			border-color: rgba(255, 255, 255, 0.14);
+			color: rgba(var(--ink), 0.94);
+			background: rgba(255, 255, 255, 0.75);
+			border-color: rgba(16, 18, 22, 0.16);
 			box-shadow: none;
 		}
 
 		.hero__aside { height: 100%; }
 		.aside__card {
-			padding: 1.1rem 1.1rem 1.2rem;
+			border-radius: var(--radius-lg);
+			background: rgba(255, 255, 255, 0.70);
+			border: 1px solid rgba(16, 18, 22, 0.14);
+			box-shadow: 0 18px 40px rgba(16, 18, 22, 0.10);
+			padding: 1.1rem;
 			height: 100%;
 			display: flex;
 			flex-direction: column;
 			justify-content: space-between;
+			gap: 1rem;
 		}
 		.aside__title {
-			font-weight: 800;
+			font-weight: 900;
 			letter-spacing: -0.01em;
 		}
-		.aside__list {
-			margin: 0.85rem 0 0;
-			padding-left: 1.1rem;
-			color: rgba(var(--muted), 1);
+		.aside__grid {
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+			gap: 0.65rem;
 		}
-		.aside__list a { background-image: none; color: rgba(var(--ink), 0.92); }
-		.aside__list a:hover { color: rgba(255, 176, 0, 0.95); }
+		.tile {
+			background-image: none;
+			padding: 0.75rem 0.8rem;
+			border-radius: 16px;
+			border: 1px solid rgba(16, 18, 22, 0.12);
+			background: rgba(246, 243, 236, 0.78);
+			transition: transform 140ms ease, box-shadow 140ms ease, border 140ms ease;
+		}
+		.tile:hover {
+			transform: translateY(-1px);
+			border-color: rgba(31, 75, 255, 0.22);
+			box-shadow: 0 18px 45px rgba(16, 18, 22, 0.10);
+		}
+		.tile__t { display: block; font-weight: 900; letter-spacing: -0.01em; }
+		.tile__d { display: block; margin-top: 0.2rem; color: rgba(var(--muted), 1); font-size: 0.92rem; }
 
 		.chips {
-			margin-top: 1rem;
 			display: flex;
 			flex-wrap: wrap;
 			gap: 0.45rem;
 		}
 		.chip {
 			background-image: none;
-			display: inline-flex;
-			align-items: center;
-			gap: 0.35rem;
-			padding: 0.26rem 0.65rem;
+			padding: 0.22rem 0.65rem;
 			border-radius: 999px;
-			border: 1px solid rgba(255, 255, 255, 0.12);
-			background: rgba(255, 255, 255, 0.05);
+			border: 1px solid rgba(16, 18, 22, 0.12);
+			background: rgba(255, 255, 255, 0.70);
 			color: rgba(var(--muted), 1);
 			font-size: 0.82rem;
 			transition: transform 140ms ease, background 140ms ease;
 		}
-		.chip:hover { transform: translateY(-1px); background: rgba(255, 176, 0, 0.10); }
+		.chip:hover { transform: translateY(-1px); background: rgba(31, 75, 255, 0.08); }
 
 		.section {
-			margin-top: 1.2rem;
+			margin-top: 1.1rem;
 			border-radius: var(--radius-lg);
 			padding: 1.15rem 1.15rem 0.4rem;
-			border: 1px solid rgba(255, 255, 255, 0.10);
-			background: rgba(255, 255, 255, 0.03);
+			border: 1px solid rgba(16, 18, 22, 0.12);
+			background: rgba(255, 255, 255, 0.58);
+			box-shadow: 0 18px 40px rgba(16, 18, 22, 0.08);
 		}
 		.section__head {
 			display: flex;
@@ -273,28 +260,23 @@ const topTags = [...allTags.entries()]
 			margin-bottom: 0.6rem;
 		}
 		.section__more { background-image: none; color: rgba(var(--muted), 1); }
-		.section__more:hover { color: rgba(255, 176, 0, 0.95); }
+		.section__more:hover { color: rgba(31, 75, 255, 1); }
 
-		.postlist {
-			list-style: none;
-			padding: 0;
-			margin: 0;
-		}
+		.postlist { list-style: none; padding: 0; margin: 0; }
 		.post {
 			padding: 0.95rem 0;
-			border-top: 1px solid rgba(255, 255, 255, 0.10);
+			border-top: 1px dashed rgba(16, 18, 22, 0.16);
 			animation: rise 520ms cubic-bezier(.2,.8,.2,1) both;
 			animation-delay: var(--d, 0ms);
 		}
 		.post:first-child { border-top: none; }
 		.post__title {
-			display: inline-block;
 			background-image: none;
-			font-weight: 900;
+			display: inline-block;
+			font-weight: 950;
 			letter-spacing: -0.02em;
-			color: rgba(var(--ink), 0.98);
 		}
-		.post__title:hover { color: rgba(255, 176, 0, 0.98); }
+		.post__title:hover { color: rgba(31, 75, 255, 1); }
 		.post__meta {
 			margin-top: 0.25rem;
 			color: rgba(var(--muted), 1);
@@ -303,16 +285,10 @@ const topTags = [...allTags.entries()]
 			gap: 0.8rem;
 			flex-wrap: wrap;
 		}
-		.post__date { font-variant-numeric: tabular-nums; }
 		.post__desc {
 			margin-top: 0.35rem;
 			color: rgba(var(--ink), 0.86);
-			max-width: 80ch;
-		}
-
-		.empty {
-			padding: 0.95rem 0;
-			color: rgba(var(--muted), 1);
+			max-width: 84ch;
 		}
 
 		@keyframes rise {
@@ -320,8 +296,12 @@ const topTags = [...allTags.entries()]
 			to { opacity: 1; transform: translateY(0); }
 		}
 
-		@media (max-width: 900px) {
-			.hero__grid { grid-template-columns: 1fr; }
+		@media (max-width: 920px) {
+			.hero { grid-template-columns: 1fr; }
+			.aside__grid { grid-template-columns: 1fr 1fr; }
+		}
+		@media (max-width: 520px) {
+			.aside__grid { grid-template-columns: 1fr; }
 		}
 	</style>
 </BaseLayout>

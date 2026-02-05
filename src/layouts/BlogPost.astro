@@ -1,86 +1,157 @@
 ---
 import { Image } from 'astro:assets';
 import type { CollectionEntry } from 'astro:content';
-import BaseHead from '../components/BaseHead.astro';
-import Footer from '../components/Footer.astro';
+import BaseLayout from './BaseLayout.astro';
 import FormattedDate from '../components/FormattedDate.astro';
-import Header from '../components/Header.astro';
 
 type Props = CollectionEntry<'blog'>['data'];
 
-const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
+const { title, description, pubDate, updatedDate, heroImage, tags = [] } = Astro.props;
 ---
 
-<html lang="en">
-	<head>
-		<BaseHead title={title} description={description} />
-		<style>
-			main {
-				width: calc(100% - 2em);
-				max-width: 100%;
-				margin: 0;
-			}
-			.hero-image {
-				width: 100%;
-			}
-			.hero-image img {
-				display: block;
-				margin: 0 auto;
-				border-radius: 12px;
-				box-shadow: var(--box-shadow);
-			}
-			.prose {
-				width: 720px;
-				max-width: calc(100% - 2em);
-				margin: auto;
-				padding: 1em;
-				color: rgb(var(--gray-dark));
-			}
-			.title {
-				margin-bottom: 1em;
-				padding: 1em 0;
-				text-align: center;
-				line-height: 1;
-			}
-			.title h1 {
-				margin: 0 0 0.5em 0;
-			}
-			.date {
-				margin-bottom: 0.5em;
-				color: rgb(var(--gray));
-			}
-			.last-updated-on {
-				font-style: italic;
-			}
-		</style>
-	</head>
+<BaseLayout title={title} description={description}>
+	<article class="article">
+		<header class="article__head">
+			<div class="head__top">
+				<div class="head__date">
+					<FormattedDate date={pubDate} />
+					{updatedDate && (
+						<span class="updated">更新于 <FormattedDate date={updatedDate} /></span>
+					)}
+				</div>
+				{tags.length > 0 && <div class="head__tags">{tags.slice(0, 5).map((t) => <a class="tag" href={`/tags/${encodeURIComponent(t)}`}>{t}</a>)}</div>}
+			</div>
+			<h1 class="head__title">{title}</h1>
+			<p class="head__desc">{description}</p>
+		</header>
 
-	<body>
-		<Header />
-		<main>
-			<article>
-				<div class="hero-image">
-					{heroImage && <Image width={1020} height={510} src={heroImage} alt="" />}
+		{heroImage && (
+			<div class="article__hero">
+				<div class="hero__frame">
+					<Image width={1200} height={600} src={heroImage} alt="" />
 				</div>
-				<div class="prose">
-					<div class="title">
-						<div class="date">
-							<FormattedDate date={pubDate} />
-							{
-								updatedDate && (
-									<div class="last-updated-on">
-										Last updated on <FormattedDate date={updatedDate} />
-									</div>
-								)
-							}
-						</div>
-						<h1>{title}</h1>
-						<hr />
-					</div>
-					<slot />
-				</div>
-			</article>
-		</main>
-		<Footer />
-	</body>
-</html>
+			</div>
+		)}
+
+		<div class="prose">
+			<slot />
+		</div>
+
+		<footer class="article__foot">
+			<div class="foot__rule"></div>
+			<div class="foot__nav">
+				<a href="/blog">← 返回文章列表</a>
+				<a href="/">回到首页</a>
+			</div>
+		</footer>
+	</article>
+
+	<style>
+		.article {
+			margin-top: 0.6rem;
+		}
+		.article__head {
+			border-radius: var(--radius-lg);
+			border: 1px solid rgba(16, 18, 22, 0.14);
+			background: rgba(255, 255, 255, 0.70);
+			box-shadow: var(--shadow);
+			padding: 1.2rem 1.2rem 1.15rem;
+			position: relative;
+			overflow: hidden;
+		}
+		.article__head::before {
+			content: "";
+			position: absolute;
+			inset: -1px;
+			background:
+				radial-gradient(900px 320px at 12% 0%, rgba(31, 75, 255, 0.14), transparent 55%),
+				radial-gradient(700px 280px at 88% 10%, rgba(255, 61, 46, 0.08), transparent 55%);
+			pointer-events: none;
+		}
+		.head__top {
+			position: relative;
+			display: flex;
+			align-items: flex-start;
+			justify-content: space-between;
+			gap: 0.8rem;
+			flex-wrap: wrap;
+		}
+		.head__date {
+			color: rgba(var(--muted), 1);
+			font-size: 0.95rem;
+			display: flex;
+			gap: 0.8rem;
+			flex-wrap: wrap;
+		}
+		.updated { opacity: 0.9; }
+		.head__tags {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 0.45rem;
+			justify-content: flex-end;
+		}
+		.tag {
+			background-image: none;
+			display: inline-flex;
+			align-items: center;
+			padding: 0.2rem 0.6rem;
+			border-radius: 999px;
+			border: 1px solid rgba(16, 18, 22, 0.14);
+			background: rgba(255, 255, 255, 0.70);
+			color: rgba(var(--muted), 1);
+			font-size: 0.82rem;
+		}
+		.tag:hover { background: rgba(31, 75, 255, 0.08); }
+
+		.head__title {
+			position: relative;
+			margin-top: 0.85rem;
+			line-height: 1.05;
+		}
+		.head__desc {
+			position: relative;
+			margin: 0.65rem 0 0;
+			color: rgba(var(--ink), 0.86);
+			max-width: 80ch;
+		}
+
+		.article__hero { margin-top: 1rem; }
+		.hero__frame {
+			border-radius: var(--radius-lg);
+			border: 1px solid rgba(16, 18, 22, 0.12);
+			background: rgba(255, 255, 255, 0.65);
+			box-shadow: 0 22px 60px rgba(16, 18, 22, 0.12);
+			padding: 0.6rem;
+		}
+
+		.prose {
+			margin-top: 1rem;
+			border-radius: var(--radius-lg);
+			border: 1px solid rgba(16, 18, 22, 0.12);
+			background: rgba(255, 255, 255, 0.68);
+			box-shadow: 0 18px 45px rgba(16, 18, 22, 0.08);
+			padding: 1.1rem 1.15rem;
+			color: rgba(var(--ink), 0.92);
+		}
+		.prose :global(p) { max-width: 80ch; }
+
+		.article__foot {
+			margin-top: 1rem;
+			padding-top: 0.6rem;
+		}
+		.foot__rule {
+			height: 1px;
+			background: linear-gradient(90deg, rgba(16, 18, 22, 0.25), transparent);
+			margin-bottom: 0.8rem;
+		}
+		.foot__nav {
+			display: flex;
+			gap: 1rem;
+			flex-wrap: wrap;
+			justify-content: space-between;
+			color: rgba(var(--muted), 1);
+		}
+		.foot__nav a { background-image: none; color: rgba(var(--muted), 1); }
+		.foot__nav a:hover { color: rgba(31, 75, 255, 1); }
+	</style>
+</BaseLayout>

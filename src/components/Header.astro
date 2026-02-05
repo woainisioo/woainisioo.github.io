@@ -14,7 +14,7 @@ const socials = [
 	<nav class="topbar__nav">
 		<a class="topbar__brand" href="/">
 			<span class="topbar__mark" aria-hidden="true"></span>
-			<span>{SITE_TITLE}</span>
+			<span class="topbar__name">{SITE_TITLE}</span>
 		</a>
 
 		<div class="topbar__links" aria-label="Primary">
@@ -42,14 +42,14 @@ const socials = [
 		position: sticky;
 		top: 0;
 		z-index: 50;
-		border-bottom: 1px solid rgba(255, 255, 255, 0.10);
-		background: rgba(10, 11, 14, 0.55);
+		border-bottom: 1px solid rgba(16, 18, 22, 0.12);
+		background: rgba(249, 247, 242, 0.72);
 		backdrop-filter: blur(10px);
 	}
 	.topbar__nav {
 		max-width: var(--maxw);
 		margin: 0 auto;
-		padding: 0.9rem 1.1rem;
+		padding: 0.95rem 1.1rem;
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
@@ -57,20 +57,24 @@ const socials = [
 		flex-wrap: wrap;
 	}
 	.topbar__brand {
+		background-image: none;
 		display: inline-flex;
 		align-items: center;
 		gap: 0.65rem;
-		font-weight: 800;
+		font-weight: 900;
 		letter-spacing: -0.02em;
-		background-image: none;
 	}
 	.topbar__mark {
 		width: 12px;
 		height: 12px;
 		border-radius: 999px;
 		background: var(--accent);
-		box-shadow: 0 0 0 6px rgba(255, 176, 0, 0.12);
+		box-shadow: 0 0 0 7px rgba(31, 75, 255, 0.12);
 	}
+	.topbar__name {
+		transform: translateY(-0.5px);
+	}
+
 	.topbar__links {
 		display: flex;
 		gap: 0.25rem;
@@ -80,20 +84,21 @@ const socials = [
 		background-image: none;
 		color: rgba(var(--ink), 0.88);
 		padding: 0.45rem 0.6rem;
-		border-radius: 12px;
+		border-radius: 999px;
 		border: 1px solid transparent;
 		transition: border 140ms ease, background 140ms ease, transform 140ms ease;
 	}
 	.topbar__links :global(a:hover) {
-		background: rgba(255, 255, 255, 0.06);
-		border-color: rgba(255, 255, 255, 0.12);
+		background: rgba(31, 75, 255, 0.06);
+		border-color: rgba(31, 75, 255, 0.16);
 		transform: translateY(-1px);
 	}
 	.topbar__links :global(a.active) {
-		background: rgba(255, 176, 0, 0.12);
-		border-color: rgba(255, 176, 0, 0.25);
+		background: rgba(31, 75, 255, 0.11);
+		border-color: rgba(31, 75, 255, 0.22);
 		color: rgba(var(--ink), 0.98);
 	}
+
 	.topbar__social {
 		display: flex;
 		gap: 0.55rem;

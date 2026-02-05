@@ -1,28 +1,31 @@
 /*
-  Redesign direction (frontend-design skill):
-  "Noir Index" — a dark, editorial blog that feels like annotated index cards
-  on a desk under a warm lamp. Sharp amber accent, tactile borders, subtle grain.
+  Full redesign (frontend-design skill):
+  "Paper Atelier" — light, editorial, tactile.
+  Warm paper background, deep ink typography, ultramarine accent.
+  Minimal but memorable: asymmetric spacing + crisp rules + subtle grain.
 */
 
 :root {
-	--bg: 10, 11, 14;
-	--surface: 16, 18, 23;
-	--surface-2: 22, 24, 31;
-	--ink: 242, 240, 232;
-	--muted: 172, 169, 155;
-	--faint: 120, 118, 110;
+	--bg: 249, 247, 242; /* paper */
+	--surface: 255, 255, 255;
+	--surface-2: 246, 243, 236;
+	--ink: 16, 18, 22;
+	--muted: 76, 85, 98;
+	--faint: 122, 132, 148;
 
-	--accent: #ffb000; /* amber */
-	--accent-2: #7cf7d4; /* mint highlight (sparingly) */
+	--accent: #1f4bff; /* ultramarine */
+	--accent-dark: #0a1d7a;
+	--accent-2: #ff3d2e; /* vermillion (sparingly) */
 
-	--border: 255, 255, 255;
-	--shadow: 0, 0, 0;
+	--border: 16, 18, 22;
+	--hairline: 16, 18, 22;
 
 	--radius-lg: 18px;
 	--radius-md: 14px;
 	--radius-sm: 10px;
+	--maxw: 980px;
 
-	--maxw: 920px;
+	--shadow: 0 18px 45px rgba(16, 18, 22, 0.12);
 }
 
 @font-face {
@@ -41,7 +44,7 @@
 }
 
 html {
-	color-scheme: dark;
+	color-scheme: light;
 }
 
 body {
@@ -57,29 +60,28 @@ body {
 	overflow-wrap: break-word;
 
 	background:
-		radial-gradient(1200px 900px at 18% 6%, rgba(255, 176, 0, 0.11), transparent 60%),
-		radial-gradient(900px 700px at 78% 12%, rgba(124, 247, 212, 0.06), transparent 52%),
-		radial-gradient(900px 650px at 65% 90%, rgba(255, 255, 255, 0.03), transparent 55%),
+		radial-gradient(900px 520px at 12% 6%, rgba(31, 75, 255, 0.10), transparent 60%),
+		radial-gradient(720px 420px at 82% 10%, rgba(255, 61, 46, 0.06), transparent 55%),
 		linear-gradient(180deg, rgba(var(--bg), 100%), rgba(var(--bg), 100%));
 }
 
-/* Subtle grain overlay */
+/* Very subtle paper grain overlay */
 body::before {
 	content: "";
 	position: fixed;
 	inset: 0;
 	pointer-events: none;
 	background-image:
-		url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='.22'/%3E%3C/svg%3E");
+		url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='.12'/%3E%3C/svg%3E");
 	opacity: 0.18;
-	mix-blend-mode: overlay;
+	mix-blend-mode: multiply;
 }
 
 main {
 	width: var(--maxw);
 	max-width: calc(100% - 2.2em);
 	margin: 0 auto;
-	padding: 3.25em 0 4em;
+	padding: 3.2em 0 4em;
 }
 
 h1,
@@ -90,34 +92,34 @@ h5,
 h6 {
 	margin: 0 0 0.55rem 0;
 	color: rgb(var(--ink));
-	line-height: 1.15;
-	letter-spacing: -0.02em;
+	line-height: 1.12;
+	letter-spacing: -0.025em;
 }
 
-h1 { font-size: clamp(2.05rem, 4vw, 3.0rem); }
-h2 { font-size: clamp(1.45rem, 2.6vw, 2.05rem); }
+h1 { font-size: clamp(2.2rem, 4.3vw, 3.4rem); }
+h2 { font-size: clamp(1.55rem, 2.9vw, 2.25rem); }
 h3 { font-size: 1.35rem; }
 
-p { margin: 0 0 1.15em 0; }
+p { margin: 0 0 1.15em 0; color: rgba(var(--ink), 0.92); }
 
 a {
 	color: rgb(var(--ink));
 	text-decoration: none;
-	background-image: linear-gradient(transparent 70%, rgba(255, 176, 0, 0.28) 0);
+	background-image: linear-gradient(transparent 72%, rgba(31, 75, 255, 0.22) 0);
 	background-size: 100% 100%;
 	background-repeat: no-repeat;
-	transition: background 140ms ease, color 140ms ease, transform 140ms ease;
+	transition: background 140ms ease, transform 140ms ease;
 }
 
 a:hover {
-	background-image: linear-gradient(transparent 62%, rgba(255, 176, 0, 0.45) 0);
+	background-image: linear-gradient(transparent 66%, rgba(31, 75, 255, 0.34) 0);
 }
 
 a:focus-visible,
 button:focus-visible,
 input:focus-visible,
 textarea:focus-visible {
-	outline: 2px solid rgba(255, 176, 0, 0.85);
+	outline: 2px solid rgba(31, 75, 255, 0.85);
 	outline-offset: 3px;
 	border-radius: 10px;
 }
@@ -126,41 +128,41 @@ strong, b { font-weight: 700; }
 
 code {
 	padding: 2px 6px;
-	background: rgba(255, 255, 255, 0.06);
-	border: 1px solid rgba(255, 255, 255, 0.10);
-	border-radius: 8px;
+	background: rgba(16, 18, 22, 0.04);
+	border: 1px solid rgba(16, 18, 22, 0.08);
+	border-radius: 9px;
 	font-size: 0.95em;
 }
 
 pre {
 	padding: 1.25em;
 	border-radius: var(--radius-md);
-	background: rgba(255, 255, 255, 0.05);
-	border: 1px solid rgba(255, 255, 255, 0.10);
+	background: rgba(16, 18, 22, 0.92);
+	color: rgba(249, 247, 242, 0.96);
+	border: 1px solid rgba(16, 18, 22, 0.22);
 	overflow: auto;
-	box-shadow: 0 18px 50px rgba(0, 0, 0, 0.32);
+	box-shadow: 0 22px 60px rgba(16, 18, 22, 0.22);
 }
-
 pre > code { all: unset; }
 
 img {
 	max-width: 100%;
 	height: auto;
 	border-radius: 14px;
-	border: 1px solid rgba(255, 255, 255, 0.10);
-	box-shadow: 0 18px 40px rgba(0, 0, 0, 0.25);
+	border: 1px solid rgba(16, 18, 22, 0.10);
+	box-shadow: 0 18px 44px rgba(16, 18, 22, 0.12);
 }
 
 blockquote {
 	margin: 1.2rem 0;
-	padding: 0.2rem 0 0.2rem 1rem;
-	border-left: 3px solid rgba(255, 176, 0, 0.85);
-	color: rgba(var(--ink), 0.88);
+	padding: 0.15rem 0 0.15rem 1rem;
+	border-left: 3px solid rgba(31, 75, 255, 0.85);
+	color: rgba(var(--ink), 0.85);
 }
 
 hr {
 	border: none;
-	border-top: 1px dashed rgba(255, 255, 255, 0.18);
+	border-top: 1px dashed rgba(16, 18, 22, 0.18);
 	margin: 1.8rem 0;
 }
 
@@ -168,10 +170,11 @@ input,
 textarea {
 	font-size: 16px;
 	color: rgb(var(--ink));
-	background: rgba(255, 255, 255, 0.06);
-	border: 1px solid rgba(255, 255, 255, 0.14);
-	border-radius: 12px;
-	padding: 0.65rem 0.8rem;
+	background: rgba(255, 255, 255, 0.75);
+	border: 1px solid rgba(16, 18, 22, 0.16);
+	border-radius: 14px;
+	padding: 0.7rem 0.85rem;
+	box-shadow: 0 10px 26px rgba(16, 18, 22, 0.06);
 }
 
 table { width: 100%; }

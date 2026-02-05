@@ -16,18 +16,63 @@ const tags = [...tagCount.entries()]
 	.sort((a, b) => a.tag.localeCompare(b.tag, 'zh-Hans-CN'));
 ---
 
-<BaseLayout title="标签">
-	<h1>标签</h1>
-	{tags.length === 0 ? (
-		<p>还没有设置任何标签。</p>
-	) : (
-		<ul>
-			{tags.map((t) => (
-				<li>
-					<a href={`/tags/${encodeURIComponent(t.tag)}`}>{t.tag}</a>
-					<span style="opacity:0.7">（{t.count}）</span>
-				</li>
-			))}
-		</ul>
-	)}
+<BaseLayout title="标签" description="按主题浏览文章">
+	<section class="wrap">
+		<h1>标签</h1>
+		<p class="sub">按主题浏览。</p>
+
+		{tags.length === 0 ? (
+			<p>还没有设置任何标签。</p>
+		) : (
+			<div class="cloud">
+				{tags.map((t) => (
+					<a class="tag" href={`/tags/${encodeURIComponent(t.tag)}`}>
+						<span class="tag__name">{t.tag}</span>
+						<span class="tag__count">{t.count}</span>
+					</a>
+				))}
+			</div>
+		)}
+	</section>
+
+	<style>
+		.wrap { margin-top: 0.6rem; }
+		.sub { color: rgba(var(--muted), 1); }
+		.cloud {
+			margin-top: 1rem;
+			display: flex;
+			flex-wrap: wrap;
+			gap: 0.65rem;
+			padding: 1rem;
+			border-radius: var(--radius-lg);
+			border: 1px solid rgba(16, 18, 22, 0.12);
+			background: rgba(255, 255, 255, 0.62);
+			box-shadow: 0 18px 45px rgba(16, 18, 22, 0.08);
+		}
+		.tag {
+			background-image: none;
+			display: inline-flex;
+			align-items: baseline;
+			gap: 0.5rem;
+			padding: 0.45rem 0.8rem;
+			border-radius: 999px;
+			border: 1px solid rgba(16, 18, 22, 0.14);
+			background: rgba(255, 255, 255, 0.75);
+			transition: transform 140ms ease, border 140ms ease;
+		}
+		.tag:hover {
+			transform: translateY(-1px);
+			border-color: rgba(31, 75, 255, 0.24);
+		}
+		.tag__name { font-weight: 900; letter-spacing: -0.01em; }
+		.tag__count {
+			font-variant-numeric: tabular-nums;
+			padding: 0.12rem 0.45rem;
+			border-radius: 999px;
+			background: rgba(31, 75, 255, 0.08);
+			border: 1px solid rgba(31, 75, 255, 0.18);
+			color: rgba(var(--muted), 1);
+			font-size: 0.9rem;
+		}
+	</style>
 </BaseLayout>
