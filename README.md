@@ -1,62 +1,68 @@
-# Astro Starter Kit: Blog
+# 个人博客（简约风）
 
-```sh
-npm create astro@latest -- --template blog
+技术栈：**Astro + Markdown**（纯静态站点）
+
+## 主要功能
+
+- 文章列表 / 文章详情
+- Markdown/MDX 写作
+- 标签页（/tags）
+- 站内搜索（/search，纯前端）
+- RSS（/rss.xml）
+- Sitemap（/sitemap-index.xml）
+- 适合部署到 GitHub Pages / Cloudflare Pages（免费 + HTTPS）
+
+## 本地预览
+
+```bash
+cd personal-blog
+npm install
+npm run dev
 ```
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+打开：<http://localhost:4321>
 
-Features:
+## 写文章
 
-- ✅ Minimal styling (make it your own!)
-- ✅ 100/100 Lighthouse performance
-- ✅ SEO-friendly with canonical URLs and OpenGraph data
-- ✅ Sitemap support
-- ✅ RSS Feed support
-- ✅ Markdown & MDX support
+在 `src/content/blog/` 新建 `*.md`：
 
-## 🚀 Project Structure
+```md
+---
+title: '文章标题'
+description: '一句话摘要'
+pubDate: '2026-02-05'
+tags: ['随笔', '技术']
+---
 
-Inside of your Astro project, you'll see the following folders and files:
-
-```text
-├── public/
-├── src/
-│   ├── components/
-│   ├── content/
-│   ├── layouts/
-│   └── pages/
-├── astro.config.mjs
-├── README.md
-├── package.json
-└── tsconfig.json
+正文...
 ```
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+## 部署到 GitHub Pages（推荐：免费 + 安全 + 稳定）
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+### 方案 A（最省事）：用户/组织主页
 
-The `src/content/` directory contains "collections" of related Markdown and MDX documents. Use `getCollection()` to retrieve posts from `src/content/blog/`, and type-check your frontmatter using an optional schema. See [Astro's Content Collections docs](https://docs.astro.build/en/guides/content-collections/) to learn more.
+1. 在 GitHub 新建仓库：`<你的GitHub用户名>.github.io`（必须是这个名字）
+2. 把本项目推到该仓库（main 分支）
+3. 在仓库 Settings → Pages：
+   - Build and deployment 选择 **GitHub Actions**
+4. 等 Actions 跑完，网站会出现在：
+   - `https://<你的GitHub用户名>.github.io/`
+5. **重要：**修改 `astro.config.mjs` 里的 `site` 为你的真实地址
 
-Any static assets, like images, can be placed in the `public/` directory.
+### 方案 B：项目页（URL 带 /repo）
 
-## 🧞 Commands
+也可以部署到 `https://<user>.github.io/<repo>/`，但需要额外配置 `base` 路径。
+如果你要用这个方案，告诉我你的 repo 名字，我把配置补齐。
 
-All commands are run from the root of the project, from a terminal:
+## 安全性说明
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
+- 纯静态站点：没有数据库、没有后端登录面，攻击面很小
+- GitHub Pages/Cloudflare Pages 默认提供 HTTPS
 
-## 👀 Want to learn more?
+---
 
-Check out [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
-
-## Credit
-
-This theme is based off of the lovely [Bear Blog](https://github.com/HermanMartinus/bearblog/).
+如果你把以下信息给我，我可以把站点文案/站点名/配色一次性改好，并给你生成可直接发布的版本：
+- 博客名称
+- 个人简介（about 页面）
+- GitHub 用户名（用于 Pages 地址）
+- 是否需要自定义域名（可选）

@@ -1,0 +1,33 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const posts = await getCollection('blog');
+const tagCount = new Map<string, number>();
+
+for (const p of posts) {
+	for (const tag of p.data.tags ?? []) {
+		tagCount.set(tag, (tagCount.get(tag) ?? 0) + 1);
+	}
+}
+
+const tags = [...tagCount.entries()]
+	.map(([tag, count]) => ({ tag, count }))
+	.sort((a, b) => a.tag.localeCompare(b.tag, 'zh-Hans-CN'));
+---
+
+<BaseLayout title="标签">
+	<h1>标签</h1>
+	{tags.length === 0 ? (
+		<p>还没有设置任何标签。</p>
+	) : (
+		<ul>
+			{tags.map((t) => (
+				<li>
+					<a href={`/tags/${encodeURIComponent(t.tag)}`}>{t.tag}</a>
+					<span style="opacity:0.7">（{t.count}）</span>
+				</li>
+			))}
+		</ul>
+	)}
+</BaseLayout>

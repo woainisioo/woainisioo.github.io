@@ -1,0 +1,52 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const posts = (await getCollection('blog'))
+	.map((p) => ({
+		title: p.data.title,
+		description: p.data.description,
+		pubDate: p.data.pubDate,
+		slug: p.slug,
+		tags: p.data.tags ?? [],
+	}))
+	.sort((a, b) => b.pubDate.valueOf() - a.pubDate.valueOf());
+---
+
+<BaseLayout title="搜索">
+	<h1>搜索</h1>
+	<p style="opacity:0.8">在本博客的文章标题/摘要/标签中搜索（纯前端，无需后端）。</p>
+
+	<input id="q" type="search" placeholder="输入关键词…" style="width:100%;padding:0.6rem;border:1px solid rgba(var(--black),15%);border-radius:8px;" />
+	<ul id="results"></ul>
+
+	<script define:vars={{ posts }}>
+		const input = document.getElementById('q');
+		const list = document.getElementById('results');
+
+		function render(items) {
+			list.innerHTML = items
+				.map(
+					(p) =>
+						`<li style="margin:0.5rem 0">
+							<a href="/blog/${p.slug}/">${p.title}</a>
+							<div style="opacity:0.75;font-size:0.95em">${p.description ?? ''}</div>
+							<div style="opacity:0.7;font-size:0.85em">${new Date(p.pubDate).toLocaleDateString('zh-CN')} ${p.tags?.length ? ' · ' + p.tags.join(', ') : ''}</div>
+						</li>`
+				)
+				.join('');
+		}
+
+		function query(q) {
+			const s = q.trim().toLowerCase();
+			if (!s) return posts;
+			return posts.filter((p) => {
+				const hay = `${p.title} ${p.description} ${(p.tags || []).join(' ')}`.toLowerCase();
+				return hay.includes(s);
+			});
+		}
+
+		render(posts);
+		input.addEventListener('input', () => render(query(input.value)));
+	</script>
+</BaseLayout>
